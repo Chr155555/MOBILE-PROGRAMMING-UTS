@@ -41,92 +41,102 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  "my",
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.cyan,
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-                Text(
-                  "UNTAR",
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.blue,
-                    fontStyle: FontStyle.italic,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
+        child: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/wallpaper.jpg'),
+              fit: BoxFit.cover,
             ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Halo,",
-                  style: TextStyle(
-                    fontSize: 12,
-                  ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      "my",
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.red
+                      ),
+                    ),
+                    Text(
+                      "UNTAR",
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: const Color.fromARGB(255, 136, 12, 4),
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
-                Text(
-                  "Pengguna myUNTAR",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.white,
-                minimumSize: Size(450,50),
               ),
-              child: Text("Masuk"),
-              
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ElevatedButton.icon(
-                  onPressed: () {},
-                  icon: Icon(Icons.add_home_rounded),
-                  style: IconButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.blue,
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Halo,",
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
                   ),
-                  label: Text("Pengajuan KPR")
-                ),
-                ElevatedButton.icon(
-                  onPressed: () {},
-                  icon: Icon(Icons.atm),
-                  style: IconButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.blue,
+                  Text(
+                    "Pengguna myUNTAR",
+                    style: TextStyle(
+                      fontSize: 38,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  label: Text("ATM")
+                ],
+              ),
+              ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: const Color.fromARGB(255, 151, 0, 0),
+                  minimumSize: Size(250,50),
                 ),
-                ElevatedButton.icon(
-                  onPressed: () {},
-                  icon: Icon(Icons.house),
-                  style: IconButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.blue,
+                child: Text("Masuk"),
+                
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () {},
+                    icon: Icon(Icons.add_home_rounded),
+                    style: IconButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: const Color.fromARGB(255, 151, 0, 0),
+                    ),
+                    label: Text("Pengajuan KPR")
                   ),
-                  label: Text("BCA Life")
-                ),
-              ],
-            )
-          ],
+                  ElevatedButton.icon(
+                    onPressed: () {},
+                    icon: Icon(Icons.atm),
+                    style: IconButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: const Color.fromARGB(255, 151, 0, 0),
+                    ),
+                    label: Text("ATM")
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: () {},
+                    icon: Icon(Icons.house),
+                    style: IconButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: const Color.fromARGB(255, 151, 0, 0),
+                    ),
+                    label: Text("BCA Life")
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
