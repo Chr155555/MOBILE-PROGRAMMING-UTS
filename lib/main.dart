@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'dashboard.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -93,8 +93,15 @@ class MyHomePage extends StatelessWidget {
                   ),
                 ],
               ),
-              ElevatedButton(
-                onPressed: () {},
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                context,
+                MaterialPageRoute(
+                builder: (context) => const dashboard(),
+                ),
+              );
+            },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
                   foregroundColor: const Color.fromARGB(255, 151, 0, 0),
