@@ -60,7 +60,7 @@ class MyHomePage extends StatelessWidget {
                       "my",
                       style: TextStyle(
                         fontSize: 20,
-                        color: Colors.red
+                        color: const Color.fromARGB(255, 244, 67, 54)
                       ),
                     ),
                     Text(
