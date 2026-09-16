@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/transfer.dart';
 
 class dashboard extends StatelessWidget {
   const dashboard({super.key});
@@ -10,13 +11,7 @@ class dashboard extends StatelessWidget {
         automaticallyImplyLeading: false,
         title: const Row(
           children: [
-            Text(
-              "my",
-              style: TextStyle(
-                fontSize: 24,
-                color: Colors.red,
-              ),
-            ),
+            Text("my", style: TextStyle(fontSize: 24, color: Colors.red)),
             Text(
               "UNTAR",
               style: TextStyle(
@@ -38,9 +33,30 @@ class dashboard extends StatelessWidget {
                   image: AssetImage('assets/wallpaper.jpg'),
                   fit: BoxFit.cover,
                 ),
-                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const transfer(),
+                        ),
+                      );
+                    },
+                    icon: Icon(Icons.money),
+                    style: IconButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: const Color.fromARGB(255, 151, 0, 0),
+                    ),
+                    label: Text("Transfer"),
+                  ),
+                ],
               ),
             ),
+          ),
         ],
       ),
     );
