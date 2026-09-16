@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/dashboard.dart';
 
 class transfer extends StatefulWidget {
   const transfer({super.key});
@@ -21,7 +22,7 @@ class _transferState extends State<transfer> {
   void _onNumberTap(String value) {
     setState(() {
       if (_rawAmount.isEmpty && (value == "0" || value == "000")) return;
-      
+
       if (_rawAmount.length + value.length <= 11) {
         _rawAmount += value;
       }
@@ -52,24 +53,43 @@ class _transferState extends State<transfer> {
         elevation: 0,
         backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
-        title: const Row(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              "my",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w400,
-                color: Colors.red,
-              ),
+            Row(
+              children: [
+                const Text(
+                  "my",
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.red,
+                  ),
+                ),
+                const Text(
+                  "UNTAR",
+                  style: TextStyle(
+                    fontSize: 24,
+                    color: untarRed,
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
-            Text(
-              "UNTAR",
-              style: TextStyle(
-                fontSize: 24,
-                color: untarRed,
-                fontStyle: FontStyle.italic,
-                fontWeight: FontWeight.bold,
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const dashboard()),
+                );
+              },
+              icon: const Icon(Icons.arrow_back),
+              style: IconButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: const Color.fromARGB(255, 151, 0, 0),
               ),
+              label: const Text("Kembali"),
             ),
           ],
         ),
@@ -77,10 +97,7 @@ class _transferState extends State<transfer> {
       body: Stack(
         children: [
           Positioned.fill(
-            child: Image.asset(
-              'assets/wallpaper.jpg',
-              fit: BoxFit.cover,
-            ),
+            child: Image.asset('assets/wallpaper.jpg', fit: BoxFit.cover),
           ),
 
           // 2. KONTEN (Card Atas + Keypad Bawah)
@@ -93,7 +110,10 @@ class _transferState extends State<transfer> {
 
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 16,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.95),
                       borderRadius: BorderRadius.circular(20),
@@ -106,7 +126,7 @@ class _transferState extends State<transfer> {
                       ],
                     ),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Text(
                           "Nominal Transfer",
@@ -125,7 +145,9 @@ class _transferState extends State<transfer> {
                             style: TextStyle(
                               fontSize: 34,
                               fontWeight: FontWeight.bold,
-                              color: _rawAmount.isEmpty ? Colors.black26 : untarRed,
+                              color: _rawAmount.isEmpty
+                                  ? Colors.black26
+                                  : untarRed,
                             ),
                           ),
                         ),
@@ -135,10 +157,22 @@ class _transferState extends State<transfer> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            _buildPresetChip("50.000", () => _setPresetAmount(50000)),
-                            _buildPresetChip("100.000", () => _setPresetAmount(100000)),
-                            _buildPresetChip("200.000", () => _setPresetAmount(200000)),
-                            _buildPresetChip("500.000", () => _setPresetAmount(500000)),
+                            _buildPresetChip(
+                              "50.000",
+                              () => _setPresetAmount(50000),
+                            ),
+                            _buildPresetChip(
+                              "100.000",
+                              () => _setPresetAmount(100000),
+                            ),
+                            _buildPresetChip(
+                              "200.000",
+                              () => _setPresetAmount(200000),
+                            ),
+                            _buildPresetChip(
+                              "500.000",
+                              () => _setPresetAmount(500000),
+                            ),
                           ],
                         ),
                       ],
@@ -148,7 +182,10 @@ class _transferState extends State<transfer> {
                   const Spacer(),
 
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 12,
+                      horizontal: 16,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.95),
                       borderRadius: BorderRadius.circular(24),
@@ -185,9 +222,16 @@ class _transferState extends State<transfer> {
                         ),
                         Row(
                           children: [
-                            _buildKeypadBtn("000", () => _onNumberTap("000"), fontSize: 18),
+                            _buildKeypadBtn(
+                              "000",
+                              () => _onNumberTap("000"),
+                              fontSize: 18,
+                            ),
                             _buildKeypadBtn("0", () => _onNumberTap("0")),
-                            _buildKeypadIconBtn(Icons.backspace_outlined, _onDeleteTap),
+                            _buildKeypadIconBtn(
+                              Icons.backspace_outlined,
+                              _onDeleteTap,
+                            ),
                           ],
                         ),
                       ],
@@ -201,7 +245,9 @@ class _transferState extends State<transfer> {
                     height: 52,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: _rawAmount.isEmpty ? Colors.grey.shade400 : untarRed,
+                        backgroundColor: _rawAmount.isEmpty
+                            ? Colors.grey.shade400
+                            : untarRed,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -234,7 +280,11 @@ class _transferState extends State<transfer> {
     );
   }
 
-  Widget _buildKeypadBtn(String label, VoidCallback onTap, {double fontSize = 24}) {
+  Widget _buildKeypadBtn(
+    String label,
+    VoidCallback onTap, {
+    double fontSize = 24,
+  }) {
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
@@ -296,7 +346,11 @@ class _transferState extends State<transfer> {
         ),
         child: Text(
           label,
-          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.black87),
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: Colors.black87,
+          ),
         ),
       ),
     );
