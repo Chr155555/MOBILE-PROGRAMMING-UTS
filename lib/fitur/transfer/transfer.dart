@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/dashboard.dart';
+import '../Dashboard/Dashboard.dart';
 
 class transfer extends StatefulWidget {
   const transfer({super.key});
@@ -81,7 +81,7 @@ class _transferState extends State<transfer> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const dashboard()),
+                  MaterialPageRoute(builder: (context) => const Dashboard()),
                 );
               },
               icon: const Icon(Icons.arrow_back),

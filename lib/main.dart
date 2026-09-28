@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dashboard.dart';
+import 'fitur/Dashboard/Dashboard.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -93,22 +93,21 @@ class MyHomePage extends StatelessWidget {
                   ),
                 ],
               ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                context,
-                MaterialPageRoute(
-                builder: (context) => const dashboard(),
-                ),
-              );
-            },
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                    builder: (context) => const Dashboard(),
+                    ),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: const Color.fromARGB(255, 151, 0, 0),
-                  minimumSize: Size(250,50),
-                ),
-                child: Text("Masuk"),
-                
+                    backgroundColor: Colors.white,
+                    foregroundColor: const Color.fromARGB(255, 151, 0, 0),
+                    minimumSize: Size(250,50),
+                  ),
+                child: Text("Masuk"),    
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -148,5 +147,4 @@ class MyHomePage extends StatelessWidget {
       ),
     );
   }
-
 }
