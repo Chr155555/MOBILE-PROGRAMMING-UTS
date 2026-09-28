@@ -1,25 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/transfer.dart';
+import '../transfer/transfer.dart';
+import '../../main.dart';
 
-class dashboard extends StatelessWidget {
-  const dashboard({super.key});
+class Dashboard extends StatelessWidget {
+  const Dashboard({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Row(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("my", style: TextStyle(fontSize: 24, color: Colors.red)),
-            Text(
-              "UNTAR",
-              style: TextStyle(
-                fontSize: 24,
-                color: const Color.fromARGB(255, 136, 12, 4),
-                fontStyle: FontStyle.italic,
-                fontWeight: FontWeight.bold,
+            Row(
+              children: [
+                Text("my", style: TextStyle(fontSize: 24, color: Colors.red)),
+                Text(
+                  "UNTAR",
+                  style: TextStyle(
+                    fontSize: 24,
+                    color: Color.fromARGB(255, 136, 12, 4),
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MyApp()),
+                );
+              },
+              icon: const Icon(Icons.arrow_back),
+              style: IconButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: const Color.fromARGB(255, 151, 0, 0),
               ),
+              label: const Text("Kembali"),
             ),
           ],
         ),
