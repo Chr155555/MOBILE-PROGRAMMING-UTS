@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../Dashboard/Dashboard.dart';
+import '../dashboard/model/dashboard_model.dart';
 
 class transfer extends StatefulWidget {
   const transfer({super.key});
@@ -78,12 +78,7 @@ class _transferState extends State<transfer> {
               ],
             ),
             ElevatedButton.icon(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Dashboard()),
-                );
-              },
+              onPressed: () => Navigator.pop(context),
               icon: const Icon(Icons.arrow_back),
               style: IconButton.styleFrom(
                 backgroundColor: Colors.white,
@@ -100,7 +95,6 @@ class _transferState extends State<transfer> {
             child: Image.asset('assets/wallpaper.jpg', fit: BoxFit.cover),
           ),
 
-          // 2. KONTEN (Card Atas + Keypad Bawah)
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -256,8 +250,37 @@ class _transferState extends State<transfer> {
                       onPressed: _rawAmount.isEmpty
                           ? null
                           : () {
-                              int finalAmount = int.parse(_rawAmount);
-                              print("Nominal transfer: $finalAmount");
+                              final finalAmount =
+                                  int.parse(_rawAmount).toDouble();
+
+                              if (finalAmount > balanceNotifier.value) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Saldo tidak cukup'),
+                                  ),
+                                );
+                                return;
+                              }
+
+                              addTransaction(
+                                TransactionItem(
+                                  title: 'Transfer',
+                                  subtitle: 'Transfer',
+                                  amount: finalAmount,
+                                  date: DateTime.now(),
+                                  icon: Icons.swap_horiz,
+                                  type: TransactionType.expense,
+                                ),
+                              );
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'Transfer ${formatRupiah(finalAmount)} berhasil',
+                                  ),
+                                ),
+                              );
+                              Navigator.pop(context);
                             },
                       child: const Text(
                         'Lanjutkan Transfer',
@@ -293,7 +316,7 @@ class _transferState extends State<transfer> {
           child: InkWell(
             onTap: onTap,
             borderRadius: BorderRadius.circular(16),
-            splashColor: const Color(0xFF880C04).withOpacity(0.15),
+            splashColor: const Color(0xFF880C04).withValues(alpha: 0.15),
             child: Container(
               height: 52,
               alignment: Alignment.center,
@@ -321,7 +344,7 @@ class _transferState extends State<transfer> {
           child: InkWell(
             onTap: onTap,
             borderRadius: BorderRadius.circular(16),
-            splashColor: Colors.red.withOpacity(0.15),
+            splashColor: Colors.red.withValues(alpha: 0.15),
             child: Container(
               height: 52,
               alignment: Alignment.center,
