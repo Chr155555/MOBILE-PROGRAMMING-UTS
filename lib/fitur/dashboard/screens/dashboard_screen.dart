@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../transfer/transfer.dart';
 import '../model/dashboard_model.dart';
 import '../widgets/dashboard_widgets.dart';
+import '../../qris/qris.dart';
 
 class Dashboard extends StatelessWidget {
   const Dashboard({super.key});
@@ -174,6 +175,62 @@ class Dashboard extends StatelessWidget {
                             ),
                           ),
                         ),
+
+                    const SizedBox(width: 10),
+                      SizedBox(
+                        width: 100,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Qris(),
+                              ),
+                            );
+                          },
+
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 14,
+                            ),
+
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF880C04)
+                                  .withValues(alpha: 0.08),
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+
+                            child: Column(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF880C04),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+
+                                  child: const Icon(
+                                    Icons.qr_code,
+                                    color: Colors.white,
+                                    size: 24,
+                                  ),
+                                ),
+
+                                const SizedBox(height: 8),
+                                  const Text(
+                                    'QRIS',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        )
                       ],
                     ),
                   ],
