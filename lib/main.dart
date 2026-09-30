@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'fitur/dashboard/screens/dashboard_screen.dart';
+import 'fitur/rekening/pilih_rekening.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -7,28 +8,12 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
         colorScheme: .fromSeed(seedColor: Colors.deepPurple),
       ),
       home: MyHomePage(),
@@ -60,7 +45,7 @@ class MyHomePage extends StatelessWidget {
                       "my",
                       style: TextStyle(
                         fontSize: 20,
-                        color: const Color.fromARGB(255, 244, 67, 54)
+                        color: const Color.fromARGB(255, 244, 67, 54),
                       ),
                     ),
                     Text(
@@ -98,16 +83,16 @@ class MyHomePage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                    builder: (context) => const Dashboard(),
+                      builder: (context) => const PilihRekening(),
                     ),
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: const Color.fromARGB(255, 151, 0, 0),
-                    minimumSize: Size(250,50),
-                  ),
-                child: Text("Masuk"),    
+                  backgroundColor: Colors.white,
+                  foregroundColor: const Color.fromARGB(255, 151, 0, 0),
+                  minimumSize: Size(250, 50),
+                ),
+                child: Text("Masuk"),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -119,7 +104,7 @@ class MyHomePage extends StatelessWidget {
                       backgroundColor: Colors.white,
                       foregroundColor: const Color.fromARGB(255, 151, 0, 0),
                     ),
-                    label: Text("Pengajuan KPR")
+                    label: Text("Pengajuan KPR"),
                   ),
                   ElevatedButton.icon(
                     onPressed: () {},
@@ -128,7 +113,7 @@ class MyHomePage extends StatelessWidget {
                       backgroundColor: Colors.white,
                       foregroundColor: const Color.fromARGB(255, 151, 0, 0),
                     ),
-                    label: Text("ATM")
+                    label: Text("ATM"),
                   ),
                   ElevatedButton.icon(
                     onPressed: () {},
@@ -137,10 +122,10 @@ class MyHomePage extends StatelessWidget {
                       backgroundColor: Colors.white,
                       foregroundColor: const Color.fromARGB(255, 151, 0, 0),
                     ),
-                    label: Text("BCA Life")
+                    label: Text("BCA Life"),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),
