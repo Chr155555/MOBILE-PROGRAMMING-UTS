@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../dashboard/screens/dashboard_screen.dart';
-
-String akunEmail = '';
-String akunUntarId = '';
-String akunPassword = '';
-String akunTelepon = '';
 
 class BukaRekening extends StatefulWidget {
   const BukaRekening({super.key});
@@ -21,15 +18,20 @@ class _BukaRekeningState extends State<BukaRekening> {
   final teleponC = TextEditingController();
 
   String pesan = '';
+  bool loading = false;
 
-  void daftar() {
-    String email = emailC.text;
-    String untarId = untarIdC.text;
+  Future<void> daftar() async {
+    String email = emailC.text.trim();
+    String untarId = untarIdC.text.trim();
     String pass = passC.text;
     String pass2 = pass2C.text;
-    String telepon = teleponC.text;
+    String telepon = teleponC.text.trim();
 
-    if (email == '' || untarId == '' || pass == '' || telepon == '') {
+    if (email == '' ||
+        untarId == '' ||
+        pass == '' ||
+        pass2 == '' ||
+        telepon == '') {
       setState(() {
         pesan = 'Semua kolom harus diisi';
       });
@@ -43,17 +45,79 @@ class _BukaRekeningState extends State<BukaRekening> {
       return;
     }
 
-    akunEmail = email;
-    akunUntarId = untarId;
-    akunPassword = pass;
-    akunTelepon = telepon;
+    if (pass.length < 6) {
+      setState(() {
+        pesan = 'Password minimal 6 karakter';
+      });
+      return;
+    }
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const Dashboard(),
-      ),
-    );
+    setState(() {
+      loading = true;
+      pesan = '';
+    });
+
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: pass,
+      );
+
+      String uid = userCredential.user!.uid;
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .set({
+        'email': email,
+        'untarId': untarId,
+        'telepon': telepon,
+        'saldo': 2500000  ,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      if (!mounted) return;
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Dashboard(),
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        if (e.code == 'email-already-in-use') {
+          pesan = 'Email sudah terdaftar';
+        } else if (e.code == 'invalid-email') {
+          pesan = 'Format email tidak valid';
+        } else if (e.code == 'weak-password') {
+          pesan = 'Password terlalu lemah';
+        } else {
+          pesan = 'Gagal membuat akun: ${e.message}';
+        }
+      });
+    } catch (e) {
+      setState(() {
+        pesan = 'Terjadi kesalahan';
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          loading = false;
+        });
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    emailC.dispose();
+    untarIdC.dispose();
+    passC.dispose();
+    pass2C.dispose();
+    teleponC.dispose();
+    super.dispose();
   }
 
   @override
@@ -64,11 +128,14 @@ class _BukaRekeningState extends State<BukaRekening> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: const [
+            const Row(
+              children: [
                 Text(
                   "my",
-                  style: TextStyle(fontSize: 24, color: Colors.red),
+                  style: TextStyle(
+                    fontSize: 24,
+                    color: Colors.red,
+                  ),
                 ),
                 Text(
                   "UNTAR",
@@ -118,7 +185,9 @@ class _BukaRekeningState extends State<BukaRekening> {
                   border: OutlineInputBorder(),
                 ),
               ),
+
               const SizedBox(height: 14),
+
               TextField(
                 controller: untarIdC,
                 decoration: const InputDecoration(
@@ -128,7 +197,9 @@ class _BukaRekeningState extends State<BukaRekening> {
                   border: OutlineInputBorder(),
                 ),
               ),
+
               const SizedBox(height: 14),
+
               TextField(
                 controller: passC,
                 obscureText: true,
@@ -139,7 +210,9 @@ class _BukaRekeningState extends State<BukaRekening> {
                   border: OutlineInputBorder(),
                 ),
               ),
+
               const SizedBox(height: 14),
+
               TextField(
                 controller: pass2C,
                 obscureText: true,
@@ -150,7 +223,9 @@ class _BukaRekeningState extends State<BukaRekening> {
                   border: OutlineInputBorder(),
                 ),
               ),
+
               const SizedBox(height: 14),
+
               TextField(
                 controller: teleponC,
                 keyboardType: TextInputType.phone,
@@ -161,7 +236,9 @@ class _BukaRekeningState extends State<BukaRekening> {
                   border: OutlineInputBorder(),
                 ),
               ),
+
               const SizedBox(height: 14),
+
               Text(
                 pesan,
                 style: const TextStyle(
@@ -169,17 +246,23 @@ class _BukaRekeningState extends State<BukaRekening> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
+
               const SizedBox(height: 10),
+
               SizedBox(
                 width: double.infinity,
                 height: 52,
                 child: ElevatedButton(
-                  onPressed: daftar,
+                  onPressed: loading ? null : daftar,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF880C04),
                     foregroundColor: Colors.white,
                   ),
-                  child: const Text("Daftar"),
+                  child: loading
+                      ? const CircularProgressIndicator(
+                          color: Colors.white,
+                        )
+                      : const Text("Daftar"),
                 ),
               ),
             ],
