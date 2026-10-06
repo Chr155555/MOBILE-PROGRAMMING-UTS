@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../dashboard/screens/dashboard_screen.dart';
-import 'buka_rekening.dart';
 
 class LoginRekening extends StatefulWidget {
   const LoginRekening({super.key});
@@ -10,42 +10,47 @@ class LoginRekening extends StatefulWidget {
 }
 
 class _LoginRekeningState extends State<LoginRekening> {
-  final untarIdC = TextEditingController();
+  final emailC = TextEditingController();
   final passC = TextEditingController();
 
   String pesan = '';
 
-  void masuk() {
-    String untarId = untarIdC.text;
+  Future<void> masuk() async {
+    String email = emailC.text.trim();
     String pass = passC.text;
 
-    if (untarId == '' || pass == '') {
+    if (email == '' || pass == '') {
       setState(() {
-        pesan = 'UNTAR ID dan password harus diisi';
+        pesan = 'Email dan password harus diisi';
       });
       return;
     }
 
-    if (akunUntarId == '') {
-      setState(() {
-        pesan = 'Akun belum terdaftar, silakan buka rekening dulu';
-      });
-      return;
-    }
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: pass,
+      );
 
-    if (untarId != akunUntarId || pass != akunPassword) {
-      setState(() {
-        pesan = 'UNTAR ID atau password salah';
-      });
-      return;
-    }
+      if (!mounted) return;
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const Dashboard(),
-      ),
-    );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Dashboard(),
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        if (e.code == 'user-not-found' ||
+            e.code == 'invalid-credential' ||
+            e.code == 'wrong-password') {
+          pesan = 'Email atau password salah';
+        } else {
+          pesan = 'Login gagal: ${e.message}';
+        }
+      });
+    }
   }
 
   @override
@@ -56,11 +61,14 @@ class _LoginRekeningState extends State<LoginRekening> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: const [
+            const Row(
+              children: [
                 Text(
                   "my",
-                  style: TextStyle(fontSize: 24, color: Colors.red),
+                  style: TextStyle(
+                    fontSize: 24,
+                    color: Colors.red,
+                  ),
                 ),
                 Text(
                   "UNTAR",
@@ -101,15 +109,17 @@ class _LoginRekeningState extends State<LoginRekening> {
           child: Column(
             children: [
               TextField(
-                controller: untarIdC,
+                controller: emailC,
+                keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(
-                  labelText: 'UNTAR ID',
+                  labelText: 'Email',
                   filled: true,
                   fillColor: Colors.white,
                   border: OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 14),
+
               TextField(
                 controller: passC,
                 obscureText: true,
@@ -120,7 +130,9 @@ class _LoginRekeningState extends State<LoginRekening> {
                   border: OutlineInputBorder(),
                 ),
               ),
+
               const SizedBox(height: 14),
+
               Text(
                 pesan,
                 textAlign: TextAlign.center,
@@ -129,7 +141,9 @@ class _LoginRekeningState extends State<LoginRekening> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
+
               const SizedBox(height: 10),
+
               SizedBox(
                 width: double.infinity,
                 height: 52,
