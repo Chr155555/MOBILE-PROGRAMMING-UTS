@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../../transfer/transfer.dart';
+import '../../transfer/screens/transfer_screen.dart';
 import '../model/dashboard_model.dart';
 import '../widgets/dashboard_widgets.dart';
 import '../../qris/qris.dart';
@@ -172,7 +172,7 @@ class Dashboard extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          const transfer(),
+                                          const TransferScreen(),
                                     ),
                                   );
                                 },
