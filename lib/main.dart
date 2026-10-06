@@ -30,109 +30,120 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
+  MyHomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/wallpaper.jpg'),
-              fit: BoxFit.cover,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: const Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Text(
+                  "my",
+                  style: TextStyle(
+                    fontSize: 24,
+                    color: Colors.red,
+                  ),
+                ),
+                Text(
+                  "UNTAR",
+                  style: TextStyle(
+                    fontSize: 24,
+                    color: Color.fromARGB(255, 136, 12, 4),
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
+          ],
+        ),
+      ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/wallpaper.jpg'),
+            fit: BoxFit.cover,
           ),
+        ),
+        child: SafeArea(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      "my",
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: const Color.fromARGB(255, 244, 67, 54),
-                      ),
+                    const Text(
+                      "Halo,",
+                      style: TextStyle(fontSize: 20),
                     ),
-                    Text(
-                      "UNTAR",
+                    const Text(
+                      "Pengguna myUNTAR",
                       style: TextStyle(
-                        fontSize: 20,
-                        color: const Color.fromARGB(255, 136, 12, 4),
-                        fontStyle: FontStyle.italic,
+                        fontSize: 38,
                         fontWeight: FontWeight.bold,
                       ),
+                    ),
+                    const SizedBox(height: 24),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const PilihRekening(),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: const Color.fromARGB(255, 151, 0, 0),
+                        minimumSize: const Size(250, 50),
+                      ),
+                      child: const Text("Masuk"),
                     ),
                   ],
                 ),
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Halo,",
-                    style: TextStyle(
-                      fontSize: 20,
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: () {},
+                      icon: const Icon(Icons.add_home_rounded),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: const Color.fromARGB(255, 151, 0, 0),
+                      ),
+                      label: const Text("Pengajuan KPR"),
                     ),
-                  ),
-                  Text(
-                    "Pengguna myUNTAR",
-                    style: TextStyle(
-                      fontSize: 38,
-                      fontWeight: FontWeight.bold,
+                    ElevatedButton.icon(
+                      onPressed: () {},
+                      icon: const Icon(Icons.atm),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: const Color.fromARGB(255, 151, 0, 0),
+                      ),
+                      label: const Text("ATM"),
                     ),
-                  ),
-                ],
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const PilihRekening(),
+                    ElevatedButton.icon(
+                      onPressed: () {},
+                      icon: const Icon(Icons.house),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: const Color.fromARGB(255, 151, 0, 0),
+                      ),
+                      label: const Text("BCA Life"),
                     ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: const Color.fromARGB(255, 151, 0, 0),
-                  minimumSize: Size(250, 50),
+                  ],
                 ),
-                child: Text("Masuk"),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButton.icon(
-                    onPressed: () {},
-                    icon: Icon(Icons.add_home_rounded),
-                    style: IconButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: const Color.fromARGB(255, 151, 0, 0),
-                    ),
-                    label: Text("Pengajuan KPR"),
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: () {},
-                    icon: Icon(Icons.atm),
-                    style: IconButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: const Color.fromARGB(255, 151, 0, 0),
-                    ),
-                    label: Text("ATM"),
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: () {},
-                    icon: Icon(Icons.house),
-                    style: IconButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: const Color.fromARGB(255, 151, 0, 0),
-                    ),
-                    label: Text("BCA Life"),
-                  ),
-                ],
               ),
             ],
           ),
