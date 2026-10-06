@@ -6,6 +6,7 @@ import '../../transfer/screens/transfer_screen.dart';
 import '../model/dashboard_model.dart';
 import '../widgets/dashboard_widgets.dart';
 import '../../qris/qris.dart';
+import '../../mutasi/screens/mutasi_screen.dart';
 
 class Dashboard extends StatelessWidget {
   const Dashboard({super.key});
@@ -59,22 +60,22 @@ class Dashboard extends StatelessWidget {
               icon: const Icon(Icons.logout),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
-                foregroundColor: const Color.fromARGB(255, 151, 0, 0),
+                foregroundColor:
+                    const Color.fromARGB(255, 151, 0, 0),
               ),
               label: const Text("Keluar"),
             ),
           ],
         ),
       ),
-
       body: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
         stream: FirebaseFirestore.instance
             .collection('users')
             .doc(user.uid)
             .snapshots(),
-
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.connectionState ==
+              ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
             );
@@ -86,7 +87,8 @@ class Dashboard extends StatelessWidget {
             );
           }
 
-          if (!snapshot.hasData || !snapshot.data!.exists) {
+          if (!snapshot.hasData ||
+              !snapshot.data!.exists) {
             return const Center(
               child: Text('Data user tidak ditemukan'),
             );
@@ -96,7 +98,8 @@ class Dashboard extends StatelessWidget {
 
           String namaUser = data['untarId'] ?? 'User';
 
-          double saldo = (data['saldo'] ?? 0).toDouble();
+          double saldo =
+              (data['saldo'] ?? 0).toDouble();
 
           return Container(
             width: double.infinity,
@@ -107,12 +110,11 @@ class Dashboard extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
             ),
-
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(20),
-
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment:
+                    CrossAxisAlignment.start,
                 children: [
                   GreetingSection(
                     greeting: greetingByTime(),
@@ -135,21 +137,24 @@ class Dashboard extends StatelessWidget {
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
-
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.92),
+                      color: Colors.white.withValues(
+                        alpha: 0.92,
+                      ),
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.08),
+                          color: Colors.black.withValues(
+                            alpha: 0.08,
+                          ),
                           blurRadius: 12,
                           offset: const Offset(0, 5),
                         ),
                       ],
                     ),
-
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment:
+                          CrossAxisAlignment.start,
                       children: [
                         const Text(
                           'Menu',
@@ -176,9 +181,9 @@ class Dashboard extends StatelessWidget {
                                     ),
                                   );
                                 },
-
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(
+                                  padding:
+                                      const EdgeInsets.symmetric(
                                     vertical: 14,
                                   ),
                                   decoration: BoxDecoration(
@@ -187,7 +192,6 @@ class Dashboard extends StatelessWidget {
                                     borderRadius:
                                         BorderRadius.circular(14),
                                   ),
-
                                   child: Column(
                                     children: [
                                       Container(
@@ -205,14 +209,13 @@ class Dashboard extends StatelessWidget {
                                           size: 24,
                                         ),
                                       ),
-
                                       const SizedBox(height: 8),
-
                                       const Text(
                                         'Transfer',
                                         style: TextStyle(
                                           fontSize: 14,
-                                          fontWeight: FontWeight.w600,
+                                          fontWeight:
+                                              FontWeight.w600,
                                           color: Colors.black87,
                                         ),
                                       ),
@@ -236,9 +239,9 @@ class Dashboard extends StatelessWidget {
                                     ),
                                   );
                                 },
-
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(
+                                  padding:
+                                      const EdgeInsets.symmetric(
                                     vertical: 14,
                                   ),
                                   decoration: BoxDecoration(
@@ -247,7 +250,6 @@ class Dashboard extends StatelessWidget {
                                     borderRadius:
                                         BorderRadius.circular(14),
                                   ),
-
                                   child: Column(
                                     children: [
                                       Container(
@@ -265,14 +267,71 @@ class Dashboard extends StatelessWidget {
                                           size: 24,
                                         ),
                                       ),
-
                                       const SizedBox(height: 8),
-
                                       const Text(
                                         'QRIS',
                                         style: TextStyle(
                                           fontSize: 14,
-                                          fontWeight: FontWeight.w600,
+                                          fontWeight:
+                                              FontWeight.w600,
+                                          color: Colors.black87,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            const SizedBox(width: 10),
+
+                            SizedBox(
+                              width: 100,
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const MutasiScreen(),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  padding:
+                                      const EdgeInsets.symmetric(
+                                    vertical: 14,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF880C04)
+                                        .withValues(alpha: 0.08),
+                                    borderRadius:
+                                        BorderRadius.circular(14),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        padding:
+                                            const EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                          color:
+                                              const Color(0xFF880C04),
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                        child: const Icon(
+                                          Icons.receipt_long,
+                                          color: Colors.white,
+                                          size: 24,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      const Text(
+                                        'Mutasi',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight:
+                                              FontWeight.w600,
                                           color: Colors.black87,
                                         ),
                                       ),
