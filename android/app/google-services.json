@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "800356554103",
+    "project_id": "myuntar-uts-a2908",
+    "storage_bucket": "myuntar-uts-a2908.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:800356554103:android:68edfb22a0cb48f44b7d72",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIWqLfl0tgC9Ng0VWj79RDXAF2G7W2ntE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
