@@ -12,6 +12,8 @@ import '../widgets/dashboard_widgets.dart';
 
 import '../../qris/screens/qris_screens.dart';
 
+import '../../listrik/screens/listrik_screen.dart';
+
 import '../../mutasi/screens/mutasi_screen.dart';
 
 class Dashboard extends StatelessWidget {
@@ -22,11 +24,7 @@ class Dashboard extends StatelessWidget {
     User? user = FirebaseAuth.instance.currentUser;
 
     if (user == null) {
-      return const Scaffold(
-        body: Center(
-          child: Text('User belum login'),
-        ),
-      );
+      return const Scaffold(body: Center(child: Text('User belum login')));
     }
 
     return Scaffold(
@@ -37,13 +35,7 @@ class Dashboard extends StatelessWidget {
           children: [
             const Row(
               children: [
-                Text(
-                  "my",
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: Colors.red,
-                  ),
-                ),
+                Text("my", style: TextStyle(fontSize: 24, color: Colors.red)),
                 Text(
                   "UNTAR",
                   style: TextStyle(
@@ -66,8 +58,7 @@ class Dashboard extends StatelessWidget {
               icon: const Icon(Icons.logout),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
-                foregroundColor:
-                    const Color.fromARGB(255, 151, 0, 0),
+                foregroundColor: const Color.fromARGB(255, 151, 0, 0),
               ),
               label: const Text("Keluar"),
             ),
@@ -80,32 +71,23 @@ class Dashboard extends StatelessWidget {
             .doc(user.uid)
             .snapshots(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState ==
-              ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
-            return const Center(
-              child: Text('Gagal mengambil data'),
-            );
+            return const Center(child: Text('Gagal mengambil data'));
           }
 
-          if (!snapshot.hasData ||
-              !snapshot.data!.exists) {
-            return const Center(
-              child: Text('Data user tidak ditemukan'),
-            );
+          if (!snapshot.hasData || !snapshot.data!.exists) {
+            return const Center(child: Text('Data user tidak ditemukan'));
           }
 
           final data = snapshot.data!.data()!;
 
           String namaUser = data['untarId'] ?? 'User';
 
-          double saldo =
-              (data['saldo'] ?? 0).toDouble();
+          double saldo = (data['saldo'] ?? 0).toDouble();
 
           return Container(
             width: double.infinity,
@@ -119,13 +101,9 @@ class Dashboard extends StatelessWidget {
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(20),
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  GreetingSection(
-                    greeting: greetingByTime(),
-                    name: namaUser,
-                  ),
+                  GreetingSection(greeting: greetingByTime(), name: namaUser),
 
                   const SizedBox(height: 16),
 
@@ -144,23 +122,18 @@ class Dashboard extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(
-                        alpha: 0.92,
-                      ),
+                      color: Colors.white.withValues(alpha: 0.92),
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(
-                            alpha: 0.08,
-                          ),
+                          color: Colors.black.withValues(alpha: 0.08),
                           blurRadius: 12,
                           offset: const Offset(0, 5),
                         ),
                       ],
                     ),
                     child: Column(
-                      crossAxisAlignment:
-                          CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
                           'Menu',
@@ -190,26 +163,23 @@ class Dashboard extends StatelessWidget {
                                   );
                                 },
                                 child: Container(
-                                  padding:
-                                      const EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                     vertical: 14,
                                   ),
                                   decoration: BoxDecoration(
                                     color: const Color(0xFF880C04)
                                         .withValues(alpha: 0.08),
-                                    borderRadius:
-                                        BorderRadius.circular(14),
+                                    borderRadius: BorderRadius.circular(14),
                                   ),
                                   child: Column(
                                     children: [
                                       Container(
-                                        padding:
-                                            const EdgeInsets.all(10),
+                                        padding: const EdgeInsets.all(10),
                                         decoration: BoxDecoration(
-                                          color:
-                                              const Color(0xFF880C04),
-                                          borderRadius:
-                                              BorderRadius.circular(12),
+                                          color: const Color(0xFF880C04),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
                                         ),
                                         child: const Icon(
                                           Icons.money,
@@ -222,8 +192,58 @@ class Dashboard extends StatelessWidget {
                                         'Transfer',
                                         style: TextStyle(
                                           fontSize: 14,
-                                          fontWeight:
-                                              FontWeight.w600,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black87,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            SizedBox(
+                              width: 100,
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const Qris(),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 14,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF880C04)
+                                        .withValues(alpha: 0.08),
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFF880C04),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                        ),
+                                        child: const Icon(
+                                          Icons.qr_code,
+                                          color: Colors.white,
+                                          size: 24,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      const Text(
+                                        'QRIS',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
                                           color: Colors.black87,
                                         ),
                                       ),
@@ -241,45 +261,41 @@ class Dashboard extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          const Qris(),
+                                          const ListrikScreen(),
                                     ),
                                   );
                                 },
                                 child: Container(
-                                  padding:
-                                      const EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                     vertical: 14,
                                   ),
                                   decoration: BoxDecoration(
                                     color: const Color(0xFF880C04)
                                         .withValues(alpha: 0.08),
-                                    borderRadius:
-                                        BorderRadius.circular(14),
+                                    borderRadius: BorderRadius.circular(14),
                                   ),
                                   child: Column(
                                     children: [
                                       Container(
-                                        padding:
-                                            const EdgeInsets.all(10),
+                                        padding: const EdgeInsets.all(10),
                                         decoration: BoxDecoration(
-                                          color:
-                                              const Color(0xFF880C04),
-                                          borderRadius:
-                                              BorderRadius.circular(12),
+                                          color: const Color(0xFF880C04),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
                                         ),
                                         child: const Icon(
-                                          Icons.qr_code,
+                                          Icons.bolt,
                                           color: Colors.white,
                                           size: 24,
                                         ),
                                       ),
                                       const SizedBox(height: 8),
                                       const Text(
-                                        'QRIS',
+                                        'Isi Listrik',
                                         style: TextStyle(
                                           fontSize: 14,
-                                          fontWeight:
-                                              FontWeight.w600,
+                                          fontWeight: FontWeight.w600,
                                           color: Colors.black87,
                                         ),
                                       ),
@@ -302,26 +318,23 @@ class Dashboard extends StatelessWidget {
                                   );
                                 },
                                 child: Container(
-                                  padding:
-                                      const EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                     vertical: 14,
                                   ),
                                   decoration: BoxDecoration(
                                     color: const Color(0xFF880C04)
                                         .withValues(alpha: 0.08),
-                                    borderRadius:
-                                        BorderRadius.circular(14),
+                                    borderRadius: BorderRadius.circular(14),
                                   ),
                                   child: Column(
                                     children: [
                                       Container(
-                                        padding:
-                                            const EdgeInsets.all(10),
+                                        padding: const EdgeInsets.all(10),
                                         decoration: BoxDecoration(
-                                          color:
-                                              const Color(0xFF880C04),
-                                          borderRadius:
-                                              BorderRadius.circular(12),
+                                          color: const Color(0xFF880C04),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
                                         ),
                                         child: const Icon(
                                           Icons.receipt_long,
@@ -334,8 +347,7 @@ class Dashboard extends StatelessWidget {
                                         'Mutasi',
                                         style: TextStyle(
                                           fontSize: 14,
-                                          fontWeight:
-                                              FontWeight.w600,
+                                          fontWeight: FontWeight.w600,
                                           color: Colors.black87,
                                         ),
                                       ),
