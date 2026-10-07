@@ -11,27 +11,30 @@ class BukaRekening extends StatefulWidget {
 }
 
 class _BukaRekeningState extends State<BukaRekening> {
-  final emailC = TextEditingController();
-  final untarIdC = TextEditingController();
-  final passC = TextEditingController();
-  final pass2C = TextEditingController();
-  final teleponC = TextEditingController();
+  final emailUser = TextEditingController();
+  final untarIdUser = TextEditingController();
+  final passUser = TextEditingController();
+  final pass2User = TextEditingController();
+  final teleponUser = TextEditingController();
+  final pinUser = TextEditingController();
 
   String pesan = '';
   bool loading = false;
 
   Future<void> daftar() async {
-    String email = emailC.text.trim();
-    String untarId = untarIdC.text.trim();
-    String pass = passC.text;
-    String pass2 = pass2C.text;
-    String telepon = teleponC.text.trim();
+    String email = emailUser.text.trim();
+    String untarId = untarIdUser.text.trim();
+    String pass = passUser.text;
+    String pass2 = pass2User.text;
+    String telepon = teleponUser.text.trim();
+    String pin = pinUser.text.trim();
 
     if (email == '' ||
         untarId == '' ||
         pass == '' ||
         pass2 == '' ||
-        telepon == '') {
+        telepon == '' ||
+        pin == '') {
       setState(() {
         pesan = 'Semua kolom harus diisi';
       });
@@ -48,6 +51,20 @@ class _BukaRekeningState extends State<BukaRekening> {
     if (pass.length < 6) {
       setState(() {
         pesan = 'Password minimal 6 karakter';
+      });
+      return;
+    }
+
+    if (pin.length != 6) {
+      setState(() {
+        pesan = 'PIN harus 6 digit';
+      });
+      return;
+    }
+
+    if (int.tryParse(pin) == null) {
+      setState(() {
+        pesan = 'PIN hanya boleh berisi angka';
       });
       return;
     }
@@ -73,7 +90,8 @@ class _BukaRekeningState extends State<BukaRekening> {
         'email': email,
         'untarId': untarId,
         'telepon': telepon,
-        'saldo': 2500000  ,
+        'saldo': 2500000,
+        'pin': pin,
         'createdAt': FieldValue.serverTimestamp(),
       });
 
@@ -112,11 +130,12 @@ class _BukaRekeningState extends State<BukaRekening> {
 
   @override
   void dispose() {
-    emailC.dispose();
-    untarIdC.dispose();
-    passC.dispose();
-    pass2C.dispose();
-    teleponC.dispose();
+    emailUser.dispose();
+    untarIdUser.dispose();
+    passUser.dispose();
+    pass2User.dispose();
+    teleponUser.dispose();
+    pinUser.dispose();
     super.dispose();
   }
 
@@ -155,7 +174,8 @@ class _BukaRekeningState extends State<BukaRekening> {
               icon: const Icon(Icons.arrow_back),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
-                foregroundColor: const Color.fromARGB(255, 151, 0, 0),
+                foregroundColor:
+                    const Color.fromARGB(255, 151, 0, 0),
               ),
               label: const Text("Kembali"),
             ),
@@ -176,7 +196,7 @@ class _BukaRekeningState extends State<BukaRekening> {
           child: Column(
             children: [
               TextField(
-                controller: emailC,
+                controller: emailUser,
                 keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(
                   labelText: 'Email',
@@ -185,11 +205,9 @@ class _BukaRekeningState extends State<BukaRekening> {
                   border: OutlineInputBorder(),
                 ),
               ),
-
               const SizedBox(height: 14),
-
               TextField(
-                controller: untarIdC,
+                controller: untarIdUser,
                 decoration: const InputDecoration(
                   labelText: 'UNTAR ID',
                   filled: true,
@@ -197,11 +215,9 @@ class _BukaRekeningState extends State<BukaRekening> {
                   border: OutlineInputBorder(),
                 ),
               ),
-
               const SizedBox(height: 14),
-
               TextField(
-                controller: passC,
+                controller: passUser,
                 obscureText: true,
                 decoration: const InputDecoration(
                   labelText: 'Password',
@@ -210,11 +226,9 @@ class _BukaRekeningState extends State<BukaRekening> {
                   border: OutlineInputBorder(),
                 ),
               ),
-
               const SizedBox(height: 14),
-
               TextField(
-                controller: pass2C,
+                controller: pass2User,
                 obscureText: true,
                 decoration: const InputDecoration(
                   labelText: 'Ulangi Password',
@@ -223,11 +237,9 @@ class _BukaRekeningState extends State<BukaRekening> {
                   border: OutlineInputBorder(),
                 ),
               ),
-
               const SizedBox(height: 14),
-
               TextField(
-                controller: teleponC,
+                controller: teleponUser,
                 keyboardType: TextInputType.phone,
                 decoration: const InputDecoration(
                   labelText: 'Nomor Telepon',
@@ -236,9 +248,22 @@ class _BukaRekeningState extends State<BukaRekening> {
                   border: OutlineInputBorder(),
                 ),
               ),
-
               const SizedBox(height: 14),
-
+              TextField(
+                controller: pinUser,
+                keyboardType: TextInputType.number,
+                obscureText: true,
+                maxLength: 6,
+                decoration: const InputDecoration(
+                  labelText: 'PIN 6 Digit',
+                  hintText: 'Masukkan PIN',
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(),
+                  counterText: '',
+                ),
+              ),
+              const SizedBox(height: 14),
               Text(
                 pesan,
                 style: const TextStyle(
@@ -246,9 +271,7 @@ class _BukaRekeningState extends State<BukaRekening> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-
               const SizedBox(height: 10),
-
               SizedBox(
                 width: double.infinity,
                 height: 52,
