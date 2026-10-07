@@ -37,62 +37,74 @@ class Qris extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 10),
+                  // Header seperti di mutasi — langsung di atas wallpaper
+                  const Text(
+                    'Pembayaran QRIS',
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Silahkan scan untuk melakukan pembayaran',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.black54,
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  // Card putih berisi konten QRIS
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 55,
-                      vertical: 19,
+                      horizontal: 20,
+                      vertical: 20,
                     ),
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.95),
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
-                        BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 15, offset: const Offset(0, 5), ),
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.06),
+                          blurRadius: 15,
+                          offset: const Offset(0, 5),
+                        ),
                       ],
                     ),
                     child: Column(
                       children: [
-                        const Text(
-                          "Pembayaran QRIS",
-                          style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        const Text(
-                          "Silahkan scan untuk melakukan pembayaran",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.black54,),
-                        ),
-                        const SizedBox(height: 15),
                         QrisScanButton(
                           onPressed: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    const QrisScan(),
+                                builder: (context) => const QrisScan(),
                               ),
                             );
                           },
                         ),
                         const SizedBox(height: 20),
-                        const Divider(height: 24, thickness: 1.5,),
+                        const Divider(height: 24, thickness: 1.5),
                         const Text(
                           "QR Saya",
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87,),
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
                         ),
                         const SizedBox(height: 15),
-                        QrisCodeCard(data: myQrData,),
+                        QrisCodeCard(data: myQrData),
                         const SizedBox(height: 15),
                         const Text(
                           "Tunjukkan QR ini kepada pengguna lain",
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 13, color: Colors.black54,),
+                          style: TextStyle(fontSize: 13, color: Colors.black54),
                         ),
                       ],
                     ),
