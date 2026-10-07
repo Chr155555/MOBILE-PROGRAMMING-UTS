@@ -75,6 +75,20 @@ class _BukaRekeningState extends State<BukaRekening> {
     });
 
     try {
+      final cekUntarId = await FirebaseFirestore.instance
+          .collection('users')
+          .where('untarId', isEqualTo: untarId)
+          .limit(1)
+          .get();
+
+      if (cekUntarId.docs.isNotEmpty) {
+        setState(() {
+          pesan = 'UNTAR ID sudah terdaftar';
+          loading = false;
+        });
+        return;
+      }
+
       UserCredential userCredential =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
