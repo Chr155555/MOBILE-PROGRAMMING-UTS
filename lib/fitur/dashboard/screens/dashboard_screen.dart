@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../../transfer/screens/transfer_screen.dart';
 import '../model/dashboard_model.dart';
 import '../widgets/dashboard_widgets.dart';
@@ -38,19 +39,6 @@ class Dashboard extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
-            ElevatedButton.icon(
-              onPressed: () async {
-                await FirebaseAuth.instance.signOut();
-                if (!context.mounted) return;
-                Navigator.pop(context);
-              },
-              icon: const Icon(Icons.logout),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: const Color.fromARGB(255, 151, 0, 0),
-              ),
-              label: const Text("Keluar"),
             ),
           ],
         ),
@@ -343,7 +331,7 @@ class Dashboard extends StatelessWidget {
           );
         },
       ),
-    bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: 0,
         selectedItemColor: const Color(0xFF880C04),
@@ -353,21 +341,13 @@ class Dashboard extends StatelessWidget {
           if (index == 1) {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => const AkunScreen(),
-              ),
+              MaterialPageRoute(builder: (context) => const AkunScreen()),
             );
           }
         },
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Akun Saya',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Akun Saya'),
         ],
       ),
     );

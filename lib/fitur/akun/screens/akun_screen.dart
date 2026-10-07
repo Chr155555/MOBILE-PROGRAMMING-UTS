@@ -20,13 +20,7 @@ class AkunScreen extends StatelessWidget {
           children: [
             const Row(
               children: [
-                Text(
-                  "my",
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: Colors.red,
-                  ),
-                ),
+                Text("my", style: TextStyle(fontSize: 24, color: Colors.red)),
                 Text(
                   "UNTAR",
                   style: TextStyle(
@@ -58,34 +52,22 @@ class AkunScreen extends StatelessWidget {
             .doc(user.uid)
             .snapshots(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState ==
-              ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
-            return const Center(
-              child: Text('Gagal mengambil data'),
-            );
+            return const Center(child: Text('Gagal mengambil data'));
           }
-          if (!snapshot.hasData ||
-              !snapshot.data!.exists) {
-            return const Center(
-              child: Text('Data user tidak ditemukan'),
-            );
+          if (!snapshot.hasData || !snapshot.data!.exists) {
+            return const Center(child: Text('Data user tidak ditemukan'));
           }
-          final akun = AkunModel.fromFirestore(
-            snapshot.data!,
-          );
+          final akun = AkunModel.fromFirestore(snapshot.data!);
           return Container(
             width: double.infinity,
             height: double.infinity,
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(
-                  'assets/wallpaper.jpg',
-                ),
+                image: AssetImage('assets/wallpaper.jpg'),
                 fit: BoxFit.cover,
               ),
             ),
@@ -93,20 +75,14 @@ class AkunScreen extends StatelessWidget {
               padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
-                  ProfilAkun(
-                    untarId: akun.untarId,
-                    email: akun.email,
-                  ),
+                  ProfilAkun(untarId: akun.untarId, email: akun.email),
                   const SizedBox(height: 20),
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(
-                        alpha: 0.95,
-                      ),
-                      borderRadius:
-                          BorderRadius.circular(20),
+                      color: Colors.white.withValues(alpha: 0.95),
+                      borderRadius: BorderRadius.circular(20),
                     ),
                     child: Column(
                       children: [
@@ -135,22 +111,19 @@ class AkunScreen extends StatelessWidget {
                     width: double.infinity,
                     height: 52,
                     child: ElevatedButton.icon(
-                      onPressed: () async {
-                        await FirebaseAuth.instance.signOut();
-                        if (!context.mounted) return;
-                        Navigator.of(context).popUntil(
-                          (route) => route.isFirst,
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) =>
+                              const LogoutConfirmationDialog(),
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            const Color(0xFF880C04),
+                        backgroundColor: const Color(0xFF880C04),
                         foregroundColor: Colors.white,
                       ),
                       icon: const Icon(Icons.logout),
-                      label: const Text(
-                        'Keluar',
-                      ),
+                      label: const Text('Keluar'),
                     ),
                   ),
                 ],
