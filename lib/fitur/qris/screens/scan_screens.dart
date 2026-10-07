@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'qris_payment.dart';
+import '../model/qris_service.dart';
+import 'payment_screens.dart';
 
 class QrisScan extends StatefulWidget {
   const QrisScan({super.key});
@@ -20,47 +21,77 @@ class _QrisScanState extends State<QrisScan> {
     super.dispose();
   }
 
-  void _processQr(String rawData) {
+  Future<void> _processQr(String rawData) async {
     if (isProcessing) return;
+
     setState(() {
       isProcessing = true;
     });
 
     try {
       final Map<String, dynamic> data = jsonDecode(rawData);
+
       if (data['type'] != 'qris') {
-        _showError('Salah QR');
-        return;
+        throw Exception('Salah QR');
       }
 
-      final String name = data['name']?.toString() ?? 'Tidak diketahui';
-      final String accountId = data['accountId']?.toString() ?? '-';      
-      controller.stop();
+      final String penerimaUid =
+          data['uid']?.toString() ?? '';
 
-      Navigator.push(context,
+      if (penerimaUid.isEmpty) {
+        throw Exception('UID tidak ditemukan');
+      }
+
+      final penerima =
+          await QrisService.getPenerima(penerimaUid);
+
+      final dataPenerima = penerima.data();
+
+      if (dataPenerima == null) {
+        throw Exception('Data penerima tidak ditemukan');
+      }
+
+      final String recipientName =
+          dataPenerima['untarId']?.toString() ?? 'Tidak diketahui';
+
+      final String accountId =
+          dataPenerima['untarId']?.toString() ?? '-';
+
+      await controller.stop();
+
+      if (!mounted) return;
+
+      await Navigator.push(
+        context,
         MaterialPageRoute(
-          builder: (context) => QrisPayment(accountId: accountId, recipientName: name,),
+          builder: (context) => QrisPayment(
+            penerimaUid: penerimaUid,
+            accountId: accountId,
+            recipientName: recipientName,
+          ),
         ),
-      ).then((_) {
-        if (mounted) {
-          setState(() {
-            isProcessing = false;
-          });
-          controller.start();
-        }
-      });
-    } catch (e) {
-      _showError('QR tidak valid');
-    }
-  }
+      );
 
-  void _showError(String message) {
-    setState(() {
-      isProcessing = false;
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message),),
-    );
+      if (mounted) {
+        setState(() {
+          isProcessing = false;
+        });
+
+        await controller.start();
+      }
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        isProcessing = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString().replaceFirst('Exception: ', '')),
+        ),
+      );
+    }
   }
 
   @override
@@ -79,6 +110,7 @@ class _QrisScanState extends State<QrisScan> {
             onDetect: (capture) {
               for (final barcode in capture.barcodes) {
                 final String? rawData = barcode.rawValue;
+
                 if (rawData != null && rawData.isNotEmpty) {
                   _processQr(rawData);
                   break;
@@ -87,22 +119,21 @@ class _QrisScanState extends State<QrisScan> {
             },
           ),
           Center(
-            child: Container(width: 280, height: 280,
+            child: Container(width: 280,height: 280,
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.white, width: 4,),
                 borderRadius: BorderRadius.circular(20),
               ),
             ),
           ),
-          Positioned(left: 20, right: 20, bottom: 30,
-            child: Container(
-              padding: const EdgeInsets.all(16),
+          Positioned(left: 20, right: 20, bottom: 30, 
+          child: Container(padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.black.withValues(alpha: 0.7),
                 borderRadius: BorderRadius.circular(15),
               ),
-
-              child: const Text('Arahkan kamera ke QR code',
+              child: const Text(
+                'Arahkan kamera ke QR code',
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.white, fontSize: 16,),
               ),
