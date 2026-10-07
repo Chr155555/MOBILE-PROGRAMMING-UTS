@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
+import '../../qris/widgets/qris_app.dart';
 import '../model/transfer_service.dart';
-import '../widgets/transfer_app_bar.dart';
 import '../widgets/transfer_target_input.dart';
-import '../widgets/transfer_amount_card.dart';
-import '../widgets/transfer_keypad.dart';
 import '../widgets/transfer_button.dart';
+import 'transfer_amount_screen.dart';
 
 const Color untarRed = Color(0xFF880C04);
 
-// Alias agar pemanggilan nama lama `transfer()` tetap berfungsi
 // ignore: camel_case_types
 typedef transfer = TransferScreen;
 
@@ -20,43 +18,10 @@ class TransferScreen extends StatefulWidget {
 }
 
 class _TransferScreenState extends State<TransferScreen> {
-  String _rawAmount = "";
   final TextEditingController _untarIdController = TextEditingController();
   bool _loading = false;
 
-  String get _formattedAmount {
-    if (_rawAmount.isEmpty || _rawAmount == "0") return "0";
-
-    return _rawAmount.replaceAllMapped(
-      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-      (Match m) => '${m[1]}.',
-    );
-  }
-
-  void _onNumberTap(String value) {
-    setState(() {
-      if (_rawAmount.isEmpty && (value == "0" || value == "000")) return;
-      if (_rawAmount.length + value.length <= 11) {
-        _rawAmount += value;
-      }
-    });
-  }
-
-  void _onDeleteTap() {
-    setState(() {
-      if (_rawAmount.isNotEmpty) {
-        _rawAmount = _rawAmount.substring(0, _rawAmount.length - 1);
-      }
-    });
-  }
-
-  void _setPresetAmount(int value) {
-    setState(() {
-      _rawAmount = value.toString();
-    });
-  }
-
-  Future<void> _handleTransfer() async {
+  Future<void> _checkAndProceed() async {
     final tujuan = _untarIdController.text.trim();
 
     if (tujuan.isEmpty) {
@@ -66,30 +31,26 @@ class _TransferScreenState extends State<TransferScreen> {
       return;
     }
 
-    if (_rawAmount.isEmpty) return;
-
-    final nominal = int.parse(_rawAmount);
-
     setState(() {
       _loading = true;
     });
 
     try {
-      await TransferService.processTransfer(
-        tujuanId: tujuan,
-        nominal: nominal,
-      );
+      final penerimaData = await TransferService.checkRecipient(tujuan);
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Transfer Rp $_formattedAmount berhasil')),
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TransferAmountScreen(
+            tujuanId: penerimaData['untarId'],
+            namaPenerima: penerimaData['nama'],
+          ),
+        ),
       );
-
-      Navigator.pop(context);
     } catch (e) {
       if (!mounted) return;
-
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -114,52 +75,43 @@ class _TransferScreenState extends State<TransferScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: const TransferAppBar(untarRed: untarRed),
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Image.asset(
-              'assets/wallpaper.jpg',
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: QrisAppBar(
+          onBack: () => Navigator.pop(context),
+        ),
+        body: Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/wallpaper.jpg'),
               fit: BoxFit.cover,
             ),
           ),
-          SafeArea(
+          child: SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 20),
                   TransferTargetInput(
                     controller: _untarIdController,
                   ),
-                  const SizedBox(height: 10),
-                  TransferAmountCard(
-                    formattedAmount: _formattedAmount,
-                    hasAmount: _rawAmount.isNotEmpty,
-                    untarRed: untarRed,
-                    onPresetTap: _setPresetAmount,
-                  ),
                   const Spacer(),
-                  TransferKeypad(
-                    untarRed: untarRed,
-                    onNumberTap: _onNumberTap,
-                    onDeleteTap: _onDeleteTap,
-                  ),
-                  const SizedBox(height: 14),
                   TransferButton(
-                    isEnabled: _rawAmount.isNotEmpty,
+                    isEnabled: true,
                     isLoading: _loading,
                     untarRed: untarRed,
-                    onPressed: _handleTransfer,
+                    onPressed: _checkAndProceed,
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 20),
                 ],
               ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }
