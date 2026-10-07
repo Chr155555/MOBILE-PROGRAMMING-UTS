@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../model/listrik_model.dart';
-import '../widgets/listrik_widget.dart';
+import '../../qris/widgets/qris_app.dart';
+import '../widgets/listrik_pin_keypad.dart';
+import 'listrik_nominal_screen.dart';
+
+const Color untarRed = Color(0xFF880C04);
 
 class ListrikScreen extends StatefulWidget {
   const ListrikScreen({super.key});
@@ -11,107 +14,50 @@ class ListrikScreen extends StatefulWidget {
 }
 
 class _ListrikScreenState extends State<ListrikScreen> {
-  final TextEditingController meterController = TextEditingController();
+  String _nomorMeter = "";
+  String _errorMessage = "";
 
-  int nominal = 0;
-  bool loading = false;
-
-  Future<void> bayar() async {
-    final nomorMeter = meterController.text.trim();
-
-    if (nomorMeter.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Nomor meter harus diisi')));
-      return;
-    }
-
-    if (nominal == 0) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Pilih nominal listrik')));
-      return;
-    }
-
-    setState(() {
-      loading = true;
-    });
-
-    try {
-      final token = await ListrikModel.bayarListrik(
-        nomorMeter: nomorMeter,
-        nominal: nominal,
-      );
-
-      if (!mounted) return;
-
-      await showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) {
-          return TokenDialog(
-            nomorMeter: nomorMeter,
-            nominal: nominal,
-            token: token,
-          );
-        },
-      );
-    } catch (e) {
-      if (!mounted) return;
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
-      );
-    } finally {
-      if (mounted) {
-        setState(() {
-          loading = false;
-        });
-      }
+  void _onNumberTap(String value) {
+    if (_nomorMeter.length < 12) {
+      setState(() {
+        _nomorMeter += value;
+        _errorMessage = "";
+      });
     }
   }
 
-  @override
-  void dispose() {
-    meterController.dispose();
-    super.dispose();
+  void _onDeleteTap() {
+    if (_nomorMeter.isNotEmpty) {
+      setState(() {
+        _nomorMeter = _nomorMeter.substring(0, _nomorMeter.length - 1);
+        _errorMessage = "";
+      });
+    }
+  }
+
+  void _proceedToNominal() {
+    if (_nomorMeter.length < 11 || _nomorMeter.length > 12) {
+      setState(() {
+        _errorMessage = 'Nomor meter harus 11 atau 12 digit';
+      });
+      return;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ListrikNominalScreen(nomorMeter: _nomorMeter),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final bool isValidLength =
+        _nomorMeter.length >= 11 && _nomorMeter.length <= 12;
+
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Row(
-              children: [
-                Text('my', style: TextStyle(fontSize: 24, color: Colors.red)),
-                Text(
-                  'UNTAR',
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: untarRed,
-                    fontStyle: FontStyle.italic,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-            ElevatedButton.icon(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: const Icon(Icons.arrow_back),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: untarRed,
-              ),
-              label: const Text('Kembali'),
-            ),
-          ],
-        ),
-      ),
+      appBar: QrisAppBar(onBack: () => Navigator.pop(context)),
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -121,143 +67,106 @@ class _ListrikScreenState extends State<ListrikScreen> {
             fit: BoxFit.cover,
           ),
         ),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.95),
-              borderRadius: BorderRadius.circular(20),
-            ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Pembayaran Listrik',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                ),
                 const SizedBox(height: 20),
-                TextField(
-                  controller: meterController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    labelText: 'Nomor Meter',
-                    hintText: 'Masukkan nomor meter',
-                    prefixIcon: Icon(Icons.electric_meter),
-                    border: OutlineInputBorder(),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 16,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.95),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.06),
+                        blurRadius: 15,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: const [
+                          Icon(Icons.electric_meter, color: untarRed),
+                          SizedBox(width: 10),
+                          Text(
+                            'Nomor Meter PLN',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black54,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        _nomorMeter.isEmpty
+                            ? 'Masukkan 11-12 digit'
+                            : _nomorMeter,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: _nomorMeter.isEmpty
+                              ? Colors.black26
+                              : Colors.black87,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                      if (_errorMessage.isNotEmpty) ...[
+                        const SizedBox(height: 8),
+                        Text(
+                          _errorMessage,
+                          style: const TextStyle(
+                            color: Colors.red,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                 ),
-                const SizedBox(height: 20),
-                const Text(
-                  'Pilih Nominal',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                const Spacer(),
+                ListrikPinKeypad(
+                  untarRed: untarRed,
+                  onNumberTap: _onNumberTap,
+                  onDeleteTap: _onDeleteTap,
                 ),
-                const SizedBox(height: 10),
-                Wrap(
-                  spacing: 10,
-                  runSpacing: 10,
-                  children: [
-                    NominalListrikButton(
-                      nominal: 20000,
-                      nominalDipilih: nominal,
-                      onTap: () {
-                        setState(() {
-                          nominal = 20000;
-                        });
-                      },
-                    ),
-                    NominalListrikButton(
-                      nominal: 50000,
-                      nominalDipilih: nominal,
-                      onTap: () {
-                        setState(() {
-                          nominal = 50000;
-                        });
-                      },
-                    ),
-                    NominalListrikButton(
-                      nominal: 100000,
-                      nominalDipilih: nominal,
-                      onTap: () {
-                        setState(() {
-                          nominal = 100000;
-                        });
-                      },
-                    ),
-                    NominalListrikButton(
-                      nominal: 200000,
-                      nominalDipilih: nominal,
-                      onTap: () {
-                        setState(() {
-                          nominal = 200000;
-                        });
-                      },
-                    ),
-                    NominalListrikButton(
-                      nominal: 500000,
-                      nominalDipilih: nominal,
-                      onTap: () {
-                        setState(() {
-                          nominal = 500000;
-                        });
-                      },
-                    ),
-                    NominalListrikButton(
-                      nominal: 1000000,
-                      nominalDipilih: nominal,
-                      onTap: () {
-                        setState(() {
-                          nominal = 1000000;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 25),
-                Center(
-                  child: Text(
-                    nominal == 0
-                        ? 'Rp 0'
-                        : 'Rp ${ListrikModel.formatRupiah(nominal)}',
-                    style: const TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                      color: untarRed,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 25),
+                const SizedBox(height: 14),
                 SizedBox(
                   width: double.infinity,
                   height: 52,
                   child: ElevatedButton(
-                    onPressed: loading ? null : bayar,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: untarRed,
-                      foregroundColor: Colors.white,
+                      backgroundColor: isValidLength
+                          ? untarRed
+                          : Colors.grey.shade400,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      elevation: isValidLength ? 4 : 0,
+                    ),
+                    onPressed: isValidLength ? _proceedToNominal : null,
+                    child: const Text(
+                      'Lanjutkan',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
-                    child: loading
-                        ? const SizedBox(
-                            width: 22,
-                            height: 22,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
-                            ),
-                          )
-                        : const Text(
-                            'Bayar Sekarang',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
                   ),
                 ),
+                const SizedBox(height: 10),
               ],
             ),
           ),
