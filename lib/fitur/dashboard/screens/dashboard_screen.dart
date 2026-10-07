@@ -7,6 +7,7 @@ import '../model/dashboard_model.dart';
 import '../widgets/dashboard_widgets.dart';
 import '../../qris/screens/qris_screens.dart';
 import '../../listrik/screens/listrik_screen.dart';
+import '../../pulsa/screens/pulsa_screen.dart';
 import '../../mutasi/screens/mutasi_screen.dart';
 import '../../akun/screens/akun_screen.dart';
 
@@ -257,6 +258,56 @@ class Dashboard extends StatelessWidget {
                                       const SizedBox(height: 8),
                                       const Text(
                                         'Isi Listrik',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black87,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 100,
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const PulsaScreen(),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 14,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF880C04)
+                                        .withValues(alpha: 0.08),
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFF880C04),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                        ),
+                                        child: const Icon(
+                                          Icons.phone_android,
+                                          color: Colors.white,
+                                          size: 24,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      const Text(
+                                        'Isi Pulsa',
                                         style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w600,
