@@ -10,7 +10,7 @@ import '../model/dashboard_model.dart';
 
 import '../widgets/dashboard_widgets.dart';
 
-import '../../qris/qris.dart';
+import '../../qris/screens/qris_screens.dart';
 
 import '../../mutasi/screens/mutasi_screen.dart';
 
