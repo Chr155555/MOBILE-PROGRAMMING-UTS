@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../model/qris_service.dart';
 import '../widgets/qris_amount.dart';
 import '../widgets/qris_paymentbutton.dart';
+import '../widgets/qris_pin_dialog.dart';
 import 'qris_success_screens.dart';
 
 class QrisPayment extends StatefulWidget {
@@ -46,6 +47,12 @@ class _QrisPaymentState extends State<QrisPayment> {
       _showError('Masukkan nominal pembayaran');
       return;
     }
+    final bool? pinValid = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const QrisPinDialog(),
+    );
+    if (pinValid != true) return;
 
     setState(() {
       isLoading = true;
