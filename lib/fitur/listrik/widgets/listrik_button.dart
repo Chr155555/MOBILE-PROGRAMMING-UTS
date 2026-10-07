@@ -38,7 +38,7 @@ class ListrikButton extends StatelessWidget {
                 ),
               )
             : const Text(
-                'Lanjutkan Listrik',
+                'Lanjutkan Isi Token',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,

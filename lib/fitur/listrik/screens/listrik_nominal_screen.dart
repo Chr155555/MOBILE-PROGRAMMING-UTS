@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../model/listrik_model.dart';
-import '../widgets/nominal_listrik_button.dart';
+import '../widgets/listrik_nominal_button.dart';
 import '../widgets/listrik_keypad.dart';
 import '../widgets/listrik_button.dart';
 import '../widgets/listrik_confirm_popup.dart';

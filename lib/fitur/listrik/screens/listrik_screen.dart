@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../qris/widgets/qris_app.dart';
 import '../widgets/listrik_pin_keypad.dart';
 import 'listrik_nominal_screen.dart';
 
@@ -57,7 +56,39 @@ class _ListrikScreenState extends State<ListrikScreen> {
         _nomorMeter.length >= 11 && _nomorMeter.length <= 12;
 
     return Scaffold(
-      appBar: QrisAppBar(onBack: () => Navigator.pop(context)),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Row(
+              children: [
+                Text('my', style: TextStyle(fontSize: 24, color: Colors.red)),
+                Text(
+                  'UNTAR',
+                  style: TextStyle(
+                    fontSize: 24,
+                    color: untarRed,
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(Icons.arrow_back),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: untarRed,
+              ),
+              label: const Text('Kembali'),
+            ),
+          ],
+        ),
+      ),
       body: Container(
         width: double.infinity,
         height: double.infinity,
