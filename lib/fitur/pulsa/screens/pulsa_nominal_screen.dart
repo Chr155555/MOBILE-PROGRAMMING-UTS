@@ -1,35 +1,37 @@
 import 'package:flutter/material.dart';
 
-import '../model/listrik_model.dart';
-import '../widgets/listrik_nominal_button.dart';
-import '../widgets/listrik_keypad.dart';
-import '../widgets/listrik_button.dart';
-import '../widgets/listrik_confirm_popup.dart';
-import 'listrik_pin_screen.dart';
+import '../model/pulsa_model.dart';
+import '../widgets/pulsa_nominal_button.dart';
+import '../widgets/pulsa_keypad.dart';
+import '../widgets/pulsa_button.dart';
+import '../widgets/pulsa_confirm_popup.dart';
+import 'pulsa_pin_screen.dart';
 
 const Color untarRed = Color(0xFF880C04);
 
-class ListrikNominalScreen extends StatefulWidget {
-  final String nomorMeter;
+class PulsaNominalScreen extends StatefulWidget {
+  final String nomorHp;
 
-  const ListrikNominalScreen({super.key, required this.nomorMeter});
+  const PulsaNominalScreen({super.key, required this.nomorHp});
 
   @override
-  State<ListrikNominalScreen> createState() => _ListrikNominalScreenState();
+  State<PulsaNominalScreen> createState() => _PulsaNominalScreenState();
 }
 
-class _ListrikNominalScreenState extends State<ListrikNominalScreen> {
+class _PulsaNominalScreenState extends State<PulsaNominalScreen> {
   String _rawAmount = "";
 
   String get _formattedAmount {
     if (_rawAmount.isEmpty || _rawAmount == "0") return "0";
 
-    return ListrikModel.formatRupiah(int.parse(_rawAmount));
+    return PulsaModel.formatRupiah(int.parse(_rawAmount));
   }
 
   void _onNumberTap(String value) {
+    if (value == "000") return;
+
     setState(() {
-      if (_rawAmount.isEmpty && (value == "0" || value == "000")) return;
+      if (_rawAmount.isEmpty && value == "0") return;
       if (_rawAmount.length + value.length <= 11) {
         _rawAmount += value;
       }
@@ -57,8 +59,8 @@ class _ListrikNominalScreenState extends State<ListrikNominalScreen> {
 
     final bool? confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => ListrikConfirmPopup(
-        nomorMeter: widget.nomorMeter,
+      builder: (context) => PulsaConfirmPopup(
+        nomorHp: widget.nomorHp,
         formattedAmount: _formattedAmount,
         untarRed: untarRed,
       ),
@@ -71,8 +73,8 @@ class _ListrikNominalScreenState extends State<ListrikNominalScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ListrikPinScreen(
-          nomorMeter: widget.nomorMeter,
+        builder: (context) => PulsaPinScreen(
+          nomorHp: widget.nomorHp,
           nominal: nominal,
           formattedAmount: _formattedAmount,
         ),
@@ -154,7 +156,7 @@ class _ListrikNominalScreenState extends State<ListrikNominalScreen> {
                     children: [
                       const CircleAvatar(
                         backgroundColor: untarRed,
-                        child: Icon(Icons.electric_meter, color: Colors.white),
+                        child: Icon(Icons.phone_android, color: Colors.white),
                       ),
                       const SizedBox(width: 14),
                       Expanded(
@@ -162,14 +164,14 @@ class _ListrikNominalScreenState extends State<ListrikNominalScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Text(
-                              'Nomor Meter PLN',
+                              'Nomor HP Tujuan',
                               style: TextStyle(
                                 color: Colors.black54,
                                 fontSize: 13,
                               ),
                             ),
                             Text(
-                              widget.nomorMeter,
+                              widget.nomorHp,
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
@@ -202,7 +204,7 @@ class _ListrikNominalScreenState extends State<ListrikNominalScreen> {
                   child: Column(
                     children: [
                       const Text(
-                        'Nominal Pembelian',
+                        'Nominal Pulsa',
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
@@ -229,35 +231,35 @@ class _ListrikNominalScreenState extends State<ListrikNominalScreen> {
                         runSpacing: 8,
                         alignment: WrapAlignment.center,
                         children: [
-                          ListrikNominalButton(
+                          PulsaNominalButton(
+                            nominal: 10000,
+                            nominalDipilih: currentNominal,
+                            onTap: () => _setPresetAmount(10000),
+                          ),
+                          PulsaNominalButton(
                             nominal: 20000,
                             nominalDipilih: currentNominal,
                             onTap: () => _setPresetAmount(20000),
                           ),
-                          ListrikNominalButton(
+                          PulsaNominalButton(
+                            nominal: 25000,
+                            nominalDipilih: currentNominal,
+                            onTap: () => _setPresetAmount(25000),
+                          ),
+                          PulsaNominalButton(
                             nominal: 50000,
                             nominalDipilih: currentNominal,
                             onTap: () => _setPresetAmount(50000),
                           ),
-                          ListrikNominalButton(
+                          PulsaNominalButton(
                             nominal: 100000,
                             nominalDipilih: currentNominal,
                             onTap: () => _setPresetAmount(100000),
                           ),
-                          ListrikNominalButton(
+                          PulsaNominalButton(
                             nominal: 200000,
                             nominalDipilih: currentNominal,
                             onTap: () => _setPresetAmount(200000),
-                          ),
-                          ListrikNominalButton(
-                            nominal: 500000,
-                            nominalDipilih: currentNominal,
-                            onTap: () => _setPresetAmount(500000),
-                          ),
-                          ListrikNominalButton(
-                            nominal: 1000000,
-                            nominalDipilih: currentNominal,
-                            onTap: () => _setPresetAmount(1000000),
                           ),
                         ],
                       ),
@@ -265,13 +267,13 @@ class _ListrikNominalScreenState extends State<ListrikNominalScreen> {
                   ),
                 ),
                 const Spacer(),
-                ListrikKeypad(
+                PulsaKeypad(
                   untarRed: untarRed,
                   onNumberTap: _onNumberTap,
                   onDeleteTap: _onDeleteTap,
                 ),
                 const SizedBox(height: 14),
-                ListrikButton(
+                PulsaButton(
                   isEnabled: _rawAmount.isNotEmpty,
                   isLoading: false,
                   untarRed: untarRed,

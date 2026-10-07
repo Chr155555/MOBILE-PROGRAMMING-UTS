@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class ListrikButton extends StatelessWidget {
+class PulsaButton extends StatelessWidget {
   final bool isEnabled;
   final bool isLoading;
   final VoidCallback onPressed;
   final Color untarRed;
 
-  const ListrikButton({
+  const PulsaButton({
     super.key,
     required this.isEnabled,
     required this.isLoading,
@@ -38,7 +38,7 @@ class ListrikButton extends StatelessWidget {
                 ),
               )
             : const Text(
-                'Lanjutkan Isi Token',
+                'Lanjutkan Isi Pulsa',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,

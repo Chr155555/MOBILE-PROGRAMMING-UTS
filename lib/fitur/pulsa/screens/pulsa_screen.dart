@@ -1,59 +1,60 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/listrik_pin_keypad.dart';
-import 'listrik_nominal_screen.dart';
+import '../widgets/pulsa_pin_keypad.dart';
+import 'pulsa_nominal_screen.dart';
 
 const Color untarRed = Color(0xFF880C04);
 
-class ListrikScreen extends StatefulWidget {
-  const ListrikScreen({super.key});
+class PulsaScreen extends StatefulWidget {
+  const PulsaScreen({super.key});
 
   @override
-  State<ListrikScreen> createState() => _ListrikScreenState();
+  State<PulsaScreen> createState() => _PulsaScreenState();
 }
 
-class _ListrikScreenState extends State<ListrikScreen> {
-  String _nomorMeter = "";
+class _PulsaScreenState extends State<PulsaScreen> {
+  String _rawNumber = "";
   String _errorMessage = "";
 
   void _onNumberTap(String value) {
-    if (_nomorMeter.length < 12) {
+    if (_rawNumber.length < 11) {
       setState(() {
-        _nomorMeter += value;
+        _rawNumber += value;
         _errorMessage = "";
       });
     }
   }
 
   void _onDeleteTap() {
-    if (_nomorMeter.isNotEmpty) {
+    if (_rawNumber.isNotEmpty) {
       setState(() {
-        _nomorMeter = _nomorMeter.substring(0, _nomorMeter.length - 1);
+        _rawNumber = _rawNumber.substring(0, _rawNumber.length - 1);
         _errorMessage = "";
       });
     }
   }
 
   void _proceedToNominal() {
-    if (_nomorMeter.length < 11 || _nomorMeter.length > 12) {
+    if (_rawNumber.length != 11) {
       setState(() {
-        _errorMessage = 'Nomor meter harus 11 atau 12 digit';
+        _errorMessage = 'Nomor HP harus 11 digit';
       });
       return;
     }
 
+    final formattedPhone = '+62$_rawNumber';
+
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ListrikNominalScreen(nomorMeter: _nomorMeter),
+        builder: (context) => PulsaNominalScreen(nomorHp: formattedPhone),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final bool isValidLength =
-        _nomorMeter.length >= 11 && _nomorMeter.length <= 12;
+    final bool isValidLength = _rawNumber.length == 11;
 
     return Scaffold(
       appBar: AppBar(
@@ -126,10 +127,10 @@ class _ListrikScreenState extends State<ListrikScreen> {
                     children: [
                       Row(
                         children: const [
-                          Icon(Icons.electric_meter, color: untarRed),
+                          Icon(Icons.phone_android, color: untarRed),
                           SizedBox(width: 10),
                           Text(
-                            'Nomor Meter PLN',
+                            'Nomor Telepon',
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w600,
@@ -139,18 +140,31 @@ class _ListrikScreenState extends State<ListrikScreen> {
                         ],
                       ),
                       const SizedBox(height: 12),
-                      Text(
-                        _nomorMeter.isEmpty
-                            ? 'Masukkan 11-12 digit'
-                            : _nomorMeter,
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: _nomorMeter.isEmpty
-                              ? Colors.black26
-                              : Colors.black87,
-                          letterSpacing: 1.2,
-                        ),
+                      Row(
+                        children: [
+                          const Text(
+                            '+62 ',
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: untarRed,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              _rawNumber.isEmpty ? '###########' : _rawNumber,
+                              style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: _rawNumber.isEmpty
+                                    ? Colors.black26
+                                    : Colors.black87,
+                                letterSpacing: 1.2,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       if (_errorMessage.isNotEmpty) ...[
                         const SizedBox(height: 8),
@@ -167,7 +181,7 @@ class _ListrikScreenState extends State<ListrikScreen> {
                   ),
                 ),
                 const Spacer(),
-                ListrikPinKeypad(
+                PulsaPinKeypad(
                   untarRed: untarRed,
                   onNumberTap: _onNumberTap,
                   onDeleteTap: _onDeleteTap,
