@@ -1,20 +1,13 @@
 import 'package:flutter/material.dart';
-
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import '../../transfer/screens/transfer_screen.dart';
-
 import '../model/dashboard_model.dart';
-
 import '../widgets/dashboard_widgets.dart';
-
 import '../../qris/screens/qris_screens.dart';
-
 import '../../listrik/screens/listrik_screen.dart';
-
 import '../../mutasi/screens/mutasi_screen.dart';
+import '../../akun/screens/akun_screen.dart';
 
 class Dashboard extends StatelessWidget {
   const Dashboard({super.key});
@@ -26,7 +19,6 @@ class Dashboard extends StatelessWidget {
     if (user == null) {
       return const Scaffold(body: Center(child: Text('User belum login')));
     }
-
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -50,9 +42,7 @@ class Dashboard extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: () async {
                 await FirebaseAuth.instance.signOut();
-
                 if (!context.mounted) return;
-
                 Navigator.pop(context);
               },
               icon: const Icon(Icons.logout),
@@ -74,21 +64,15 @@ class Dashboard extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-
           if (snapshot.hasError) {
             return const Center(child: Text('Gagal mengambil data'));
           }
-
           if (!snapshot.hasData || !snapshot.data!.exists) {
             return const Center(child: Text('Data user tidak ditemukan'));
           }
-
           final data = snapshot.data!.data()!;
-
           String namaUser = data['untarId'] ?? 'User';
-
           double saldo = (data['saldo'] ?? 0).toDouble();
-
           return Container(
             width: double.infinity,
             height: double.infinity,
@@ -104,9 +88,7 @@ class Dashboard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   GreetingSection(greeting: greetingByTime(), name: namaUser),
-
                   const SizedBox(height: 16),
-
                   BalanceCard(
                     card: CardInfo(
                       holderName: namaUser,
@@ -115,9 +97,7 @@ class Dashboard extends StatelessWidget {
                     ),
                     balance: saldo,
                   ),
-
                   const SizedBox(height: 20),
-
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
@@ -143,9 +123,7 @@ class Dashboard extends StatelessWidget {
                             color: Colors.black87,
                           ),
                         ),
-
                         const SizedBox(height: 14),
-
                         Wrap(
                           spacing: 10,
                           runSpacing: 10,
@@ -201,7 +179,6 @@ class Dashboard extends StatelessWidget {
                                 ),
                               ),
                             ),
-
                             SizedBox(
                               width: 100,
                               child: GestureDetector(
@@ -252,7 +229,6 @@ class Dashboard extends StatelessWidget {
                                 ),
                               ),
                             ),
-
                             SizedBox(
                               width: 100,
                               child: GestureDetector(
@@ -304,7 +280,6 @@ class Dashboard extends StatelessWidget {
                                 ),
                               ),
                             ),
-
                             SizedBox(
                               width: 100,
                               child: GestureDetector(
@@ -361,13 +336,39 @@ class Dashboard extends StatelessWidget {
                       ],
                     ),
                   ),
-
                   const SizedBox(height: 20),
                 ],
               ),
             ),
           );
         },
+      ),
+    bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: 0,
+        selectedItemColor: const Color(0xFF880C04),
+        unselectedItemColor: Colors.grey,
+        backgroundColor: Colors.white,
+        onTap: (index) {
+          if (index == 1) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AkunScreen(),
+              ),
+            );
+          }
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Akun Saya',
+          ),
+        ],
       ),
     );
   }
