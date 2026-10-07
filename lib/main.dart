@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+
 import 'firebase_options.dart';
 import 'fitur/rekening/pilih_rekening.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(const MyApp());
 }
@@ -21,9 +20,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
-      ),
+      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
       home: MyHomePage(),
     );
   }
@@ -42,13 +39,7 @@ class MyHomePage extends StatelessWidget {
           children: [
             Row(
               children: [
-                Text(
-                  "my",
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: Colors.red,
-                  ),
-                ),
+                Text("my", style: TextStyle(fontSize: 24, color: Colors.red)),
                 Text(
                   "UNTAR",
                   style: TextStyle(
@@ -79,10 +70,7 @@ class MyHomePage extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      "Halo,",
-                      style: TextStyle(fontSize: 20),
-                    ),
+                    const Text("Halo,", style: TextStyle(fontSize: 20)),
                     const Text(
                       "Pengguna myUNTAR",
                       style: TextStyle(
@@ -106,41 +94,6 @@ class MyHomePage extends StatelessWidget {
                         minimumSize: const Size(250, 50),
                       ),
                       child: const Text("Masuk"),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ElevatedButton.icon(
-                      onPressed: () {},
-                      icon: const Icon(Icons.add_home_rounded),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: const Color.fromARGB(255, 151, 0, 0),
-                      ),
-                      label: const Text("Pengajuan KPR"),
-                    ),
-                    ElevatedButton.icon(
-                      onPressed: () {},
-                      icon: const Icon(Icons.atm),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: const Color.fromARGB(255, 151, 0, 0),
-                      ),
-                      label: const Text("ATM"),
-                    ),
-                    ElevatedButton.icon(
-                      onPressed: () {},
-                      icon: const Icon(Icons.house),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: const Color.fromARGB(255, 151, 0, 0),
-                      ),
-                      label: const Text("BCA Life"),
                     ),
                   ],
                 ),
