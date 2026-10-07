@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../transfer/screens/transfer_screen.dart';
+
 import '../model/dashboard_model.dart';
+
 import '../widgets/dashboard_widgets.dart';
+
 import '../../qris/qris.dart';
+
 import '../../mutasi/screens/mutasi_screen.dart';
 
 class Dashboard extends StatelessWidget {
@@ -167,7 +173,9 @@ class Dashboard extends StatelessWidget {
 
                         const SizedBox(height: 14),
 
-                        Row(
+                        Wrap(
+                          spacing: 10,
+                          runSpacing: 10,
                           children: [
                             SizedBox(
                               width: 100,
@@ -225,8 +233,6 @@ class Dashboard extends StatelessWidget {
                               ),
                             ),
 
-                            const SizedBox(width: 10),
-
                             SizedBox(
                               width: 100,
                               child: GestureDetector(
@@ -282,8 +288,6 @@ class Dashboard extends StatelessWidget {
                                 ),
                               ),
                             ),
-
-                            const SizedBox(width: 10),
 
                             SizedBox(
                               width: 100,
