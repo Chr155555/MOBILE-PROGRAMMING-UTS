@@ -1,6 +1,10 @@
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../dashboard/screens/dashboard_screen.dart';
+
+import '../model/rekening_model.dart';
+import '../widgets/rekening_widget.dart';
+import '../../dashboard/screens/dashboard_screen.dart';
 
 class LoginRekening extends StatefulWidget {
   const LoginRekening({super.key});
@@ -10,24 +14,30 @@ class LoginRekening extends StatefulWidget {
 }
 
 class _LoginRekeningState extends State<LoginRekening> {
-  final emailC = TextEditingController();
-  final passC = TextEditingController();
+  final emailUser = TextEditingController();
+  final passUser = TextEditingController();
 
   String pesan = '';
+  bool loading = false;
 
-  Future<void> masuk() async {
-    String email = emailC.text.trim();
-    String pass = passC.text;
+  Future<void> login() async {
+    String email = emailUser.text.trim();
+    String pass = passUser.text;
 
-    if (email == '' || pass == '') {
+    if (email.isEmpty || pass.isEmpty) {
       setState(() {
-        pesan = 'Email dan password harus diisi';
+        pesan = 'Semua kolom harus diisi';
       });
       return;
     }
 
+    setState(() {
+      loading = true;
+      pesan = '';
+    });
+
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await RekeningModel.masuk(
         email: email,
         password: pass,
       );
@@ -41,16 +51,41 @@ class _LoginRekeningState extends State<LoginRekening> {
         ),
       );
     } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
+
       setState(() {
-        if (e.code == 'user-not-found' ||
-            e.code == 'invalid-credential' ||
-            e.code == 'wrong-password') {
+        if (e.code == 'invalid-email') {
+          pesan = 'Format email tidak valid';
+        } else if (e.code == 'user-not-found' ||
+            e.code == 'wrong-password' ||
+            e.code == 'invalid-credential') {
           pesan = 'Email atau password salah';
+        } else if (e.code == 'too-many-requests') {
+          pesan = 'Terlalu banyak percobaan login';
         } else {
-          pesan = 'Login gagal: ${e.message}';
+          pesan = 'Gagal login: ${e.message}';
         }
       });
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        pesan = 'Terjadi kesalahan';
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          loading = false;
+        });
+      }
     }
+  }
+
+  @override
+  void dispose() {
+    emailUser.dispose();
+    passUser.dispose();
+    super.dispose();
   }
 
   @override
@@ -88,7 +123,8 @@ class _LoginRekeningState extends State<LoginRekening> {
               icon: const Icon(Icons.arrow_back),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
-                foregroundColor: const Color.fromARGB(255, 151, 0, 0),
+                foregroundColor:
+                    const Color.fromARGB(255, 151, 0, 0),
               ),
               label: const Text("Kembali"),
             ),
@@ -108,34 +144,24 @@ class _LoginRekeningState extends State<LoginRekening> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              TextField(
-                controller: emailC,
+              InputRekening(
+                controller: emailUser,
+                label: 'Email',
                 keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(),
-                ),
               ),
+
               const SizedBox(height: 14),
 
-              TextField(
-                controller: passC,
+              InputRekening(
+                controller: passUser,
+                label: 'Password',
                 obscureText: true,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(),
-                ),
               ),
 
               const SizedBox(height: 14),
 
               Text(
                 pesan,
-                textAlign: TextAlign.center,
                 style: const TextStyle(
                   color: Colors.red,
                   fontWeight: FontWeight.bold,
@@ -144,17 +170,10 @@ class _LoginRekeningState extends State<LoginRekening> {
 
               const SizedBox(height: 10),
 
-              SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: ElevatedButton(
-                  onPressed: masuk,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF880C04),
-                    foregroundColor: Colors.white,
-                  ),
-                  child: const Text("Masuk"),
-                ),
+              TombolRekening(
+                judul: 'Masuk',
+                onPressed: login,
+                loading: loading,
               ),
             ],
           ),
