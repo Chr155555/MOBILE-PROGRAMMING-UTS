@@ -1,7 +1,10 @@
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import '../dashboard/screens/dashboard_screen.dart';
+
+import '../model/rekening_model.dart';
+import '../widgets/rekening_widget.dart';
+import '../../dashboard/screens/dashboard_screen.dart';
 
 class BukaRekening extends StatefulWidget {
   const BukaRekening({super.key});
@@ -75,39 +78,13 @@ class _BukaRekeningState extends State<BukaRekening> {
     });
 
     try {
-      final cekUntarId = await FirebaseFirestore.instance
-          .collection('users')
-          .where('untarId', isEqualTo: untarId)
-          .limit(1)
-          .get();
-
-      if (cekUntarId.docs.isNotEmpty) {
-        setState(() {
-          pesan = 'UNTAR ID sudah terdaftar';
-          loading = false;
-        });
-        return;
-      }
-
-      UserCredential userCredential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      await RekeningModel.daftar(
         email: email,
+        untarId: untarId,
         password: pass,
+        telepon: telepon,
+        pin: pin,
       );
-
-      String uid = userCredential.user!.uid;
-
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .set({
-        'email': email,
-        'untarId': untarId,
-        'telepon': telepon,
-        'saldo': 2500000,
-        'pin': pin,
-        'createdAt': FieldValue.serverTimestamp(),
-      });
 
       if (!mounted) return;
 
@@ -118,6 +95,8 @@ class _BukaRekeningState extends State<BukaRekening> {
         ),
       );
     } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
+
       setState(() {
         if (e.code == 'email-already-in-use') {
           pesan = 'Email sudah terdaftar';
@@ -130,8 +109,14 @@ class _BukaRekeningState extends State<BukaRekening> {
         }
       });
     } catch (e) {
+      if (!mounted) return;
+
       setState(() {
-        pesan = 'Terjadi kesalahan';
+        if (e.toString().contains('UNTAR ID sudah terdaftar')) {
+          pesan = 'UNTAR ID sudah terdaftar';
+        } else {
+          pesan = 'Terjadi kesalahan';
+        }
       });
     } finally {
       if (mounted) {
@@ -209,75 +194,55 @@ class _BukaRekeningState extends State<BukaRekening> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              TextField(
+              InputRekening(
                 controller: emailUser,
+                label: 'Email',
                 keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(),
-                ),
               ),
+
               const SizedBox(height: 14),
-              TextField(
+
+              InputRekening(
                 controller: untarIdUser,
-                decoration: const InputDecoration(
-                  labelText: 'UNTAR ID',
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(),
-                ),
+                label: 'UNTAR ID',
               ),
+
               const SizedBox(height: 14),
-              TextField(
+
+              InputRekening(
                 controller: passUser,
+                label: 'Password',
                 obscureText: true,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(),
-                ),
               ),
+
               const SizedBox(height: 14),
-              TextField(
+
+              InputRekening(
                 controller: pass2User,
+                label: 'Ulangi Password',
                 obscureText: true,
-                decoration: const InputDecoration(
-                  labelText: 'Ulangi Password',
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(),
-                ),
               ),
+
               const SizedBox(height: 14),
-              TextField(
+
+              InputRekening(
                 controller: teleponUser,
+                label: 'Nomor Telepon',
                 keyboardType: TextInputType.phone,
-                decoration: const InputDecoration(
-                  labelText: 'Nomor Telepon',
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(),
-                ),
               ),
+
               const SizedBox(height: 14),
-              TextField(
+
+              InputRekening(
                 controller: pinUser,
+                label: 'PIN 6 Digit',
                 keyboardType: TextInputType.number,
                 obscureText: true,
                 maxLength: 6,
-                decoration: const InputDecoration(
-                  labelText: 'PIN 6 Digit',
-                  hintText: 'Masukkan PIN',
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(),
-                  counterText: '',
-                ),
               ),
+
               const SizedBox(height: 14),
+
               Text(
                 pesan,
                 style: const TextStyle(
@@ -285,22 +250,13 @@ class _BukaRekeningState extends State<BukaRekening> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
+
               const SizedBox(height: 10),
-              SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: ElevatedButton(
-                  onPressed: loading ? null : daftar,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF880C04),
-                    foregroundColor: Colors.white,
-                  ),
-                  child: loading
-                      ? const CircularProgressIndicator(
-                          color: Colors.white,
-                        )
-                      : const Text("Daftar"),
-                ),
+
+              TombolRekening(
+                judul: 'Daftar',
+                onPressed: daftar,
+                loading: loading,
               ),
             ],
           ),

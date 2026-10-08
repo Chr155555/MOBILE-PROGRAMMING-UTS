@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'firebase_options.dart';
-import 'fitur/rekening/pilih_rekening.dart';
+import 'fitur/rekening/screens/pilih_rekening.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
